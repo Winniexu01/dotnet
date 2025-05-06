@@ -26,8 +26,6 @@ stages:
 - stage: stage
   jobs:
   - job: Setup
-    pool:
-      vmImage: ubuntu-2204
     steps:
     - script: |
         set -x 
