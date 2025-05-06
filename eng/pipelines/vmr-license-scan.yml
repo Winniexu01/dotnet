@@ -25,60 +25,63 @@ pool:
 stages:
 - stage: stage
   jobs:
-  # - job: Setup
-  #   pool:
-  #     vmImage: ubuntu-2204
-  #   steps:
-  #   - script: |
-  #       set -x 
-  #       vmrSrcDir="$(Build.SourcesDirectory)/src"
-  #       # Builds an Azure DevOps matrix definition. Each entry in the matrix is a path,
-  #       # allowing a job to be run for each src repo.
-  #       matrix=""
+  - job: Setup
+    pool:
+      vmImage: ubuntu-2204
+    steps:
+    - script: |
+        set -x 
+        vmrSrcDir="$(Build.SourcesDirectory)/src"
+        # Builds an Azure DevOps matrix definition. Each entry in the matrix is a path,
+        # allowing a job to be run for each src repo.
+        matrix=""
 
-  #       # Trim leading/trailing spaces from the repo name
-  #       specificRepoName=$(echo "${{ parameters.specificRepoName }}" | awk '{$1=$1};1')
+        # Trim leading/trailing spaces from the repo name
+        specificRepoName=$(echo "${{ parameters.specificRepoName }}" | awk '{$1=$1};1')
 
-  #       # If the repo name is provided, only scan that repo.
-  #       if [ ! -z "$specificRepoName" ]; then
-  #         matrix="\"$specificRepoName\": { \"repoPath\": \"$vmrSrcDir/$specificRepoName\" }"
-  #       else
-  #         for dir in $vmrSrcDir/*/
-  #         do
-  #           if [ ! -z "$matrix" ]; then
-  #             matrix="$matrix,"
-  #           fi
-  #           repoName=$(basename $dir)
-  #           matrix="$matrix \"$repoName\": { \"repoPath\": \"$dir\" }"
-  #         done
-  #       fi
+        # If the repo name is provided, only scan that repo.
+        if [ ! -z "$specificRepoName" ]; then
+          matrix="\"$specificRepoName\": { \"repoPath\": \"$vmrSrcDir/$specificRepoName\" }"
+        else
+          for dir in $vmrSrcDir/*/
+          do
+            if [ ! -z "$matrix" ]; then
+              matrix="$matrix,"
+            fi
+            repoName=$(basename $dir)
+            matrix="$matrix \"$repoName\": { \"repoPath\": \"$dir\" }"
+          done
+        fi
 
-  #       matrix="{ $matrix }"
+        matrix="{ $matrix }"
 
-  #       echo "##vso[task.setvariable variable=matrix;isOutput=true]$matrix"
-  #     name: GetMatrix
-  #     displayName: Get Matrix
+        echo "##vso[task.setvariable variable=matrix;isOutput=true]$matrix"
+      name: GetMatrix
+      displayName: Get Matrix
 
   - job: LicenseScan
     displayName: 'LicenseScan - ${{ parameters.specificRepoName }}'
+    dependsOn: Setup
     container:
-      image: wenwen01/prereqs:ubuntu.2404
+      image: mcr.microsoft.com/dotnet-buildtools/prereqs:azurelinux-3.0-net10.0-source-build-test-amd64
       options: --memory=6g
     timeoutInMinutes: 420
+    strategy:
+      matrix: $[ dependencies.Setup.outputs['GetMatrix.matrix'] ]
     templateContext:
       outputs:
       - output: pipelineArtifact
         displayName: 'Publish BuildLogs'
         condition: succeededOrFailed()
         targetPath: '$(Build.StagingDirectory)/BuildLogs'
-        artifactName: ${{ parameters.specificRepoName }}_BuildLogs_Attempt$(System.JobAttempt)
+        artifactName: $(Agent.JobName)_BuildLogs_Attempt$(System.JobAttempt)
     steps:
 
     - script: >
         dotnet test
         $(Build.SourcesDirectory)/test/Microsoft.DotNet.SourceBuild.Tests/Microsoft.DotNet.SourceBuild.Tests.csproj
         --filter "FullyQualifiedName=Microsoft.DotNet.SourceBuild.Tests.LicenseScanTests.ScanForLicenses"
-        --logger:'trx;LogFileName=${{ parameters.specificRepoName }}_LicenseScan.trx'
+        --logger:'trx;LogFileName=$(Agent.JobName)_LicenseScan.trx'
         --logger:'console;verbosity=detailed'
         -c Release
         -bl:$(Build.SourcesDirectory)/artifacts/log/Debug/BuildTests_$(date +"%m%d%H%M%S").binlog
@@ -125,4 +128,4 @@ stages:
         searchFolder: $(Build.SourcesDirectory)/artifacts/TestResults
         mergeTestResults: true
         publishRunAttachments: true
-        testRunTitle: ${{ parameters.specificRepoName }}
+        testRunTitle: $(Agent.JobName)
