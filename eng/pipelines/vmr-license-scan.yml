@@ -57,6 +57,7 @@ stages:
   #     displayName: Get Matrix
 
   - job: LicenseScan
+    displayName: LicenseScan - ${{ parameters.specificRepoName }}
     pool:
       vmImage: ubuntu-2204
     container:
