@@ -75,6 +75,11 @@ stages:
     steps:
 
     - script: >
+        scancode --version
+      displayName: Check scancode
+      workingDirectory: $(Build.SourcesDirectory)
+
+    - script: >
         dotnet test
         $(Build.SourcesDirectory)/test/Microsoft.DotNet.SourceBuild.Tests/Microsoft.DotNet.SourceBuild.Tests.csproj
         --filter "FullyQualifiedName=Microsoft.DotNet.SourceBuild.Tests.LicenseScanTests.ScanForLicenses"
