@@ -1,25 +1,12 @@
 # Pipeline documentation at https://github.com/dotnet/dotnet/blob/main/docs/license-scanning.md
 
-schedules:
-- cron: "0 7 * * 1"
-  displayName: Run on Mondays at 7am UTC
-  branches:
-    # For releases branches only run on internal/release branches because that's where dependencies flow.
-    # Previews don't have internal/release branches so they must be run from non-internal release branches.
-    include:
-    - main
-    - release/*.0.1xx-preview*
-    - internal/release/*.0.1xx*
-
 pr: none
 
 # Always trigger a run when changes are made to the license test implementation or baselines
 trigger:
   branches:
     include:
-    - main
-    - release/*.0.1xx-preview*
-    - internal/release/*.0.1xx*
+    - dotnet
   paths:
     include:
     - test/Microsoft.DotNet.SourceBuild.Tests/LicenseScanTests.cs
