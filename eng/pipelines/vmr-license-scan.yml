@@ -19,6 +19,9 @@ parameters:
   displayName: "Specific repo name to scan (e.g. runtime, sdk). If empty, scans all repos of the VMR."
   default: " " # Set it to an empty string to allow it be an optional parameter
 
+pool:
+  vmImage: 'ubuntu-latest'
+
 stages:
 - stage: stage
   jobs:
@@ -57,9 +60,7 @@ stages:
   #     displayName: Get Matrix
 
   - job: LicenseScan
-    displayName: LicenseScan - ${{ parameters.specificRepoName }}
-    pool:
-      vmImage: ubuntu-2204
+    displayName: 'LicenseScan - ${{ parameters.specificRepoName }}'
     container:
       image: wenwen01/prereqs:ubuntu.2404
       options: --memory=6g
