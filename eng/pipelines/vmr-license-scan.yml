@@ -58,7 +58,6 @@ stages:
       displayName: Get Matrix
 
   - job: LicenseScan
-    displayName: 'LicenseScan - ${{ parameters.specificRepoName }}'
     dependsOn: Setup
     container:
       image: mcr.microsoft.com/dotnet-buildtools/prereqs:azurelinux-3.0-net10.0-source-build-test-amd64
