@@ -1,11 +1,25 @@
 # Pipeline documentation at https://github.com/dotnet/dotnet/blob/main/docs/license-scanning.md
 
+# schedules:
+# - cron: "0 7 * * 1"
+#   displayName: Run on Mondays at 7am UTC
+#   branches:
+#     # For releases branches only run on internal/release branches because that's where dependencies flow.
+#     # Previews don't have internal/release branches so they must be run from non-internal release branches.
+#     include:
+#     - main
+#     - release/*.0.1xx-preview*
+#     - internal/release/*.0.1xx*
+
 pr: none
 
 # Always trigger a run when changes are made to the license test implementation or baselines
 trigger:
   branches:
     include:
+    # - main
+    # - release/*.0.1xx-preview*
+    # - internal/release/*.0.1xx*
     - dotnet
   paths:
     include:
@@ -19,13 +33,45 @@ parameters:
   displayName: "Specific repo name to scan (e.g. runtime, sdk). If empty, scans all repos of the VMR."
   default: " " # Set it to an empty string to allow it be an optional parameter
 
-pool:
-  vmImage: build.ubuntu.2204.amd64.open
+# variables:
+#   # GH access token for SB bot - BotAccount-dotnet-sb-bot-pat
+# - group: DotNet-Source-Build-Bot-Secrets-MVP
 
+# resources:
+#   repositories:
+#   - repository: 1ESPipelineTemplates
+#     type: git
+#     name: 1ESPipelineTemplates/1ESPipelineTemplates
+#     ref: refs/tags/release
+
+# extends:
+#   template: v1/1ES.Official.PipelineTemplate.yml@1ESPipelineTemplates
+#   parameters:
+#     pool:
+#       name: NetCore1ESPool-Svc-Internal
+#       image: 1es-ubuntu-2204
+#       os: linux
+#     containers:
+#       azurelinuxSourceBuildTestContainer:
+#         image: mcr.microsoft.com/dotnet-buildtools/prereqs:azurelinux-3.0-net10.0-source-build-test-amd64
+#     sdl:
+#       sourceAnalysisPool:
+#           name: NetCore1ESPool-Svc-Internal
+#           image: 1es-windows-2022
+#           os: windows
+#       binskim:
+#         enabled: true
+#       policheck:
+#         enabled: true
+#       tsa:
+#         enabled: true
 stages:
 - stage: stage
   jobs:
   - job: Setup
+    pool:
+      name: Azure Pipelines
+      demands: ImageOverride -equals build.ubuntu.2004.amd64
     steps:
     - script: |
         set -x 
@@ -59,6 +105,9 @@ stages:
 
   - job: LicenseScan
     dependsOn: Setup
+    pool:
+      name: Azure Pipelines
+      demands: ImageOverride -equals build.ubuntu.2004.amd64
     container:
       image: wenwen01/prereqs:linux-01
       options: '--memory=6g --privileged'
