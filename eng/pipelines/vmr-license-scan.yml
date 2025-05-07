@@ -20,7 +20,7 @@ parameters:
   default: " " # Set it to an empty string to allow it be an optional parameter
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: build.ubuntu.2204.amd64.open
 
 stages:
 - stage: stage
@@ -61,7 +61,7 @@ stages:
     dependsOn: Setup
     container:
       image: wenwen01/prereqs:linux-01
-      options: '--memory=6g'
+      options: '--memory=6g --privileged'
     timeoutInMinutes: 420
     strategy:
       matrix: $[ dependencies.Setup.outputs['GetMatrix.matrix'] ]
@@ -73,11 +73,6 @@ stages:
         targetPath: '$(Build.StagingDirectory)/BuildLogs'
         artifactName: $(Agent.JobName)_BuildLogs_Attempt$(System.JobAttempt)
     steps:
-
-    - script: >
-        scancode --version
-      displayName: Check scancode
-      workingDirectory: $(Build.SourcesDirectory)
 
     - script: >
         dotnet test
