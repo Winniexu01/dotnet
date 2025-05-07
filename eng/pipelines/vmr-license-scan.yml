@@ -60,7 +60,7 @@ stages:
   - job: LicenseScan
     dependsOn: Setup
     container:
-      image: wenwen01/prereqs:linux-01
+      image: wenwen01/prereqs:linux-02
       options: '--memory=6g'
     timeoutInMinutes: 420
     strategy:
