@@ -61,7 +61,7 @@ stages:
     dependsOn: Setup
     container:
       image: wenwen01/prereqs:linux-01
-      options: '--memory=6g --memory-swap=8g --cpus 2'
+      options: '--memory=6g'
     timeoutInMinutes: 420
     strategy:
       matrix: $[ dependencies.Setup.outputs['GetMatrix.matrix'] ]
