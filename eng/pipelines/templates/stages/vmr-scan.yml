@@ -1,9 +1,6 @@
 trigger:
   - TagScan
 
-pool:
-  vmImage: ubuntu-latest
-
 stages:
 - stage: Tag_n_Scan
   displayName: Tag & Scan
@@ -11,6 +8,8 @@ stages:
   jobs:
   - job: Tag_n_Scan
     displayName: Tag & Scan
+    pool:
+      vmImage: ubuntu-latest
 
     steps:
     - checkout: self
