@@ -6,9 +6,7 @@ stages:
   - job: Tag_n_Scan
     displayName: Tag & Scan
     pool:
-      name: $(DncEngInternalBuildPool)
-      image: 1es-ubuntu-2004
-      os: linux
+      vmImage: ubuntu-2204
 
     steps:
     - checkout: self
