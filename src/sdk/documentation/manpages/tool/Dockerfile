@@ -1,4 +1,4 @@
-FROM pandoc/core:2.18.0
+FROM wenwen01/prereqs:pandoc.2.18.0
 
 ENTRYPOINT ["/usr/bin/env"]
 
