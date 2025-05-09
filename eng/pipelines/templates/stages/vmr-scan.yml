@@ -2,7 +2,7 @@ trigger:
   - TagScan
 
 pool:
-  vmImage: ubuntu-2204
+  vmImage: ubuntu-latest
 
 stages:
 - stage: Tag_n_Scan
