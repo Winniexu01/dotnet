@@ -70,8 +70,7 @@ stages:
   jobs:
   - job: Setup
     pool:
-      name: Azure Pipelines
-      demands: ImageOverride -equals build.ubuntu.2004.amd64
+      vmImage: ubuntu-latest
     steps:
     - script: |
         set -x 
@@ -106,8 +105,7 @@ stages:
   - job: LicenseScan
     dependsOn: Setup
     pool:
-      name: Azure Pipelines
-      demands: ImageOverride -equals build.ubuntu.2004.amd64
+      vmImage: ubuntu-latest
     container:
       image: wenwen01/prereqs:linux-01
       options: '--memory=6g --privileged'
