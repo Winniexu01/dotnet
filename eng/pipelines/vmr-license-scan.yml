@@ -78,6 +78,38 @@ stages:
         # Builds an Azure DevOps matrix definition. Each entry in the matrix is a path,
         # allowing a job to be run for each src repo.
         matrix=""
+extends:
+  template: v1/1ES.Official.PipelineTemplate.yml@1ESPipelineTemplates
+  parameters:
+    pool:
+      name: NetCore1ESPool-Svc-Internal
+      image: 1es-ubuntu-2204
+      os: linux
+    containers:
+      azurelinuxSourceBuildTestContainer:
+        image: mcr.microsoft.com/dotnet-buildtools/prereqs:azurelinux-3.0-net10.0-source-build-test-amd64
+        options: '--memory=6g'
+    sdl:
+      sourceAnalysisPool:
+          name: NetCore1ESPool-Svc-Internal
+          image: 1es-windows-2022
+          os: windows
+      binskim:
+        enabled: true
+      policheck:
+        enabled: true
+      tsa:
+        enabled: true
+    stages:
+    - stage: stage
+      jobs:
+      - job: Setup
+        steps:
+        - script: |
+            vmrSrcDir="$(Build.SourcesDirectory)/src"
+            # Builds an Azure DevOps matrix definition. Each entry in the matrix is a path,
+            # allowing a job to be run for each src repo.
+            matrix=""
 
         # Trim leading/trailing spaces from the repo name
         specificRepoName=$(echo "${{ parameters.specificRepoName }}" | awk '{$1=$1};1')
