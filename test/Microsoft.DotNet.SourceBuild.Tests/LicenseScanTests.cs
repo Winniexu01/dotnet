@@ -71,11 +71,11 @@ public class LicenseScanTests : TestBase
         "generic-cla", // https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/generic-cla.LICENSE
         "gpl-1.0-plus", // https://opensource.org/license/gpl-1-0/
         "gpl-2.0", // https://opensource.org/license/gpl-2-0/
-        "gpl-3.0", // https://opensource.org/license/gpl-3-0/
-        "ietf", // https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/ietf.LICENSE
         "gpl-2.0-plus WITH autoconf-simple-exception-2.0", // https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/rules/gpl-2.0-plus_with_autoconf-simple-exception-2.0_8.RULE
         "gpl-2.0 WITH gcc-linking-exception-2.0", // https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/rules/gpl-2.0_with_gcc-linking-exception-2.0_6.RULE
+        "gpl-3.0", // https://opensource.org/license/gpl-3-0/
         "gpl-3.0-plus WITH bison-exception-2.2", // https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/rules/gpl-3.0-plus_with_bison-exception-2.2_7.RULE
+        "ietf", // https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/ietf.LICENSE
         "isc", // https://opensource.org/license/isc-license-txt/
         "iso-8879", // https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/iso-8879.LICENSE
         "lgpl-2.0-plus", // https://opensource.org/license/lgpl-2-0/
@@ -93,6 +93,7 @@ public class LicenseScanTests : TestBase
         "ms-rl", // https://opensource.org/license/ms-rl-html/
         "newton-king-cla", // https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/newton-king-cla.LICENSE
         "ngpl", // https://opensource.org/license/nethack-php/
+        "nist-software", // https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/nist-software.LICENSE
         "object-form-exception-to-mit", // https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/object-form-exception-to-mit.LICENSE
         "ofl-1.1", // https://opensource.org/license/ofl-1-1/
         "osf-1990", // https://fedoraproject.org/wiki/Licensing:MIT?rd=Licensing/MIT#HP_Variant
