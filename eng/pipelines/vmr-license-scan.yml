@@ -51,7 +51,7 @@ stages:
     pool:
       vmImage: ubuntu-latest
     container:
-      image: mcr.microsoft.com/dotnet-buildtools/prereqs:azurelinux-3.0-net10.0-source-build-test-amd64
+      image: wenwen01/prereqs:linux-02
       options: '--memory=6g'
     timeoutInMinutes: 420
     strategy:
