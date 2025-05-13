@@ -53,11 +53,33 @@ jobs:
   pool:
     vmImage: ubuntu-latest
   container: 
-    image: wenwen01/prereqs:linux-02
+    image: mcr.microsoft.com/dotnet-buildtools/prereqs:ubuntu-24.04
   timeoutInMinutes: 420
   strategy:
     matrix: $[ dependencies.Setup.outputs['GetMatrix.matrix'] ]
   steps:
+
+  - script: |
+      sudo apt update
+      sudo apt install python3 -y
+      sudo apt install python3.12-venv -y
+    displayName: install python
+    workingDirectory: $(Build.SourcesDirectory)
+
+  - script: |
+      source ./eng/common/tools.sh
+      InitializeDotNetCli true
+    displayName: Install .NET SDK
+    workingDirectory: $(Build.SourcesDirectory)
+
+  - task: PipAuthenticate@1
+    displayName: 'Pip Authenticate'
+    inputs:
+      artifactFeeds: public/dotnet-public-pypi
+      onlyAddExtraIndex: false
+
+  - script: $(sdkRoot)/eng/install-scancode.sh
+    displayName: Install Scancode
 
   - script: |
       python3 --version
@@ -65,11 +87,6 @@ jobs:
       sudo apt install python3.12-venv -y
     displayName: check python version
     workingDirectory: $(Build.SourcesDirectory)
-
-  - script: |
-      $(sdkRoot)/eng/install-scancode.sh
-      scancode --version
-    displayName: Install Scancode
 
   - script: >
       dotnet test
