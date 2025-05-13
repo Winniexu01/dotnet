@@ -64,12 +64,6 @@ jobs:
     displayName: Install .NET SDK
     workingDirectory: $(Build.SourcesDirectory)
 
-  - task: PipAuthenticate@1
-    displayName: 'Pip Authenticate'
-    inputs:
-      artifactFeeds: public/dotnet-public-pypi
-      onlyAddExtraIndex: false
-
   - script: $(sdkRoot)/eng/install-scancode.sh
     displayName: Install Scancode
 
