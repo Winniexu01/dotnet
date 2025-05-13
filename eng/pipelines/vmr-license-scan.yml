@@ -62,8 +62,8 @@ jobs:
   - script: |
       python3 --version
       scancode --version
-      apt-get update
-      apt-get install python3.12-venv -y
+      sudo apt-get update
+      sudo apt-get install python3.12-venv -y
     displayName: check python version
     workingDirectory: $(Build.SourcesDirectory)
 
