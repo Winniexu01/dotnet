@@ -1,29 +1,6 @@
 # Pipeline documentation at https://github.com/dotnet/dotnet/blob/main/docs/license-scanning.md
 
-schedules:
-- cron: "0 7 * * 1"
-  displayName: Run on Mondays at 7am UTC
-  branches:
-    # For releases branches only run on internal/release branches because that's where dependencies flow.
-    # Previews don't have internal/release branches so they must be run from non-internal release branches.
-    include:
-    - main
-    - release/*.0.1xx-preview*
-    - internal/release/*.0.1xx*
-
 pr: none
-
-# Always trigger a run when changes are made to the license test implementation or baselines
-trigger: 
-  branches:
-    include:
-    - main
-    - release/*.0.1xx-preview*
-    - internal/release/*.0.1xx*
-  paths:
-    include:
-    - test/Microsoft.DotNet.SourceBuild.SmokeTests/LicenseScanTests.cs
-    - test/Microsoft.DotNet.SourceBuild.SmokeTests/assets/LicenseScanTests
 
 parameters:
 # Provides a way to scan a specific repo. If not provided, all repos of the VMR will be scanned.
@@ -41,8 +18,7 @@ variables:
 jobs:
 - job: Setup
   pool:
-    name: NetCore1ESPool-Svc-Internal
-    demands: ImageOverride -equals 1es-ubuntu-2204
+    vmImage: ubuntu-latest
   steps:
   - script: |
       vmrSrcDir="$(Build.SourcesDirectory)/src"
@@ -76,8 +52,7 @@ jobs:
 - job: LicenseScan
   dependsOn: Setup
   pool:
-    name: NetCore1ESPool-Svc-Internal
-    demands: ImageOverride -equals 1es-ubuntu-2204
+    vmImage: ubuntu-latest
   timeoutInMinutes: 420
   strategy:
     matrix: $[ dependencies.Setup.outputs['GetMatrix.matrix'] ]
@@ -157,39 +132,3 @@ jobs:
       mergeTestResults: true
       publishRunAttachments: true
       testRunTitle: $(Agent.JobName)
-
-- job: Publish_Test_Results_PR
-  dependsOn: LicenseScan
-  condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), startsWith(variables['Build.SourceBranch'], 'refs/heads/release'))
-  pool:
-    name: NetCore1ESPool-Svc-Internal
-    demands: ImageOverride -equals 1es-ubuntu-2204
-  variables:
-  - template: templates/variables/pipelines.yml
-  steps:
-
-  - script: |
-      source ./eng/common/tools.sh
-      InitializeDotNetCli true
-    displayName: Install .NET SDK
-    workingDirectory: $(Build.SourcesDirectory)
-
-  - template: templates/steps/download-pipeline-artifact.yml
-    parameters:
-      pipeline: $(SOURCE_BUILD_LICENSE_SCAN_PIPELINE_ID)
-      buildId: $(Build.BuildId)
-      artifact: ''
-      patterns: '**/Updated*'
-      displayName: Download Updated Test Files
-
-  - script: |
-      find $(Pipeline.Workspace)/Artifacts -type f -exec mv {} $(Pipeline.Workspace)/Artifacts \;
-    displayName: Move Artifacts to root
-
-  - template: templates/steps/create-baseline-update-pr.yml
-    parameters:
-      pipeline: license
-      repo: dotnet/sdk
-      originalFilesDirectory: src/SourceBuild/content/test/Microsoft.DotNet.SourceBuild.SmokeTests/assets/LicenseScanTests
-      updatedFilesDirectory: $(Pipeline.Workspace)/Artifacts
-      pullRequestTitle: Update Source-Build License Scan Baselines and Exclusions
