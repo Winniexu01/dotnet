@@ -61,13 +61,14 @@ jobs:
 
   - script: |
       python3 --version
+      scancode --version
     displayName: check python version
     workingDirectory: $(Build.SourcesDirectory)
 
-  - script: |
-      dir /venv
-      rm -rf /venv
-    displayName: Remove scancode
+  # - script: |
+  #     dir /venv
+  #     rm -rf /venv
+  #   displayName: Remove scancode
 
   - script: |
       $(sdkRoot)/eng/install-scancode.sh
