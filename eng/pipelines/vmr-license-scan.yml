@@ -10,8 +10,6 @@ parameters:
   default: " " # Set it to an empty string to allow it be an optional parameter
 
 variables:
-  # GH access token for SB bot - BotAccount-dotnet-sb-bot-pat
-- group: DotNet-Source-Build-Bot-Secrets-MVP
 - name: sdkRoot
   value: '$(Build.SourcesDirectory)/src/sdk'
 
