@@ -15,7 +15,7 @@ pip install scancode-toolkit==$SCANCODE_VERSION
 deactivate
 
 # Setup a script which executes scancode in the virtual environment
-sudo cat > /usr/local/bin/scancode << EOF
+su cat > /usr/local/bin/scancode << EOF
 #!/bin/bash
 set -euo pipefail
 source $pyEnvPath/bin/activate
@@ -23,4 +23,4 @@ scancode "\$@"
 deactivate
 EOF
 
-chmod +x /usr/local/bin/scancode
+su chmod +x /usr/local/bin/scancode
