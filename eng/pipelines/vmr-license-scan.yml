@@ -52,6 +52,7 @@ jobs:
   dependsOn: Setup
   pool:
     vmImage: ubuntu-latest
+  container: mcr.microsoft.com/dotnet-buildtools/prereqs:centos-stream9
   timeoutInMinutes: 420
   strategy:
     matrix: $[ dependencies.Setup.outputs['GetMatrix.matrix'] ]
