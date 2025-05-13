@@ -65,8 +65,8 @@ jobs:
     workingDirectory: $(Build.SourcesDirectory)
 
   - script: |
-      rm -rf /venv
       dir /venv
+      rm -rf /venv
     displayName: Remove scancode
 
   - script: |
