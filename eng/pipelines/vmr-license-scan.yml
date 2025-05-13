@@ -1,5 +1,6 @@
 # Pipeline documentation at https://github.com/dotnet/dotnet/blob/main/docs/license-scanning.md
 
+trigger: none
 pr: none
 
 parameters:
