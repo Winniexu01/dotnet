@@ -52,19 +52,25 @@ jobs:
   dependsOn: Setup
   pool:
     vmImage: ubuntu-latest
-  container: mcr.microsoft.com/dotnet-buildtools/prereqs:centos-stream9
+  container: mcr.microsoft.com/dotnet-buildtools/prereqs:azurelinux-3.0-net10.0-source-build-test-amd64
   timeoutInMinutes: 420
   strategy:
     matrix: $[ dependencies.Setup.outputs['GetMatrix.matrix'] ]
   steps:
 
   - script: |
-      source ./eng/common/tools.sh
-      InitializeDotNetCli true
-    displayName: Install .NET SDK
+      python3 --version
+    displayName: check python version
     workingDirectory: $(Build.SourcesDirectory)
 
-  - script: $(sdkRoot)/eng/install-scancode.sh
+  - script: |
+      rm -rf /venv
+      dir /venv
+    displayName: Remove scancode
+
+  - script: |
+      $(sdkRoot)/eng/install-scancode.sh
+      dir /tmp
     displayName: Install Scancode
 
   - script: >
