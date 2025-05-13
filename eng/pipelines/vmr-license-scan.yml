@@ -62,21 +62,18 @@ jobs:
   - script: |
       python3 --version
       scancode --version
+      apt-get update
+      apt-get install python3.12-venv -y
     displayName: check python version
     workingDirectory: $(Build.SourcesDirectory)
 
-  # - script: |
-  #     dir /venv
-  #     rm -rf /venv
-  #   displayName: Remove scancode
-
   - script: |
       $(sdkRoot)/eng/install-scancode.sh
-      dir /tmp
+      scancode --version
     displayName: Install Scancode
 
   - script: >
-      $(Build.SourcesDirectory)/.dotnet/dotnet test
+      dotnet test
       $(Build.SourcesDirectory)/test/Microsoft.DotNet.SourceBuild.SmokeTests/Microsoft.DotNet.SourceBuild.SmokeTests.csproj
       --filter "FullyQualifiedName=Microsoft.DotNet.SourceBuild.SmokeTests.LicenseScanTests.ScanForLicenses"
       --logger:'trx;LogFileName=$(Agent.JobName)_LicenseScan.trx'

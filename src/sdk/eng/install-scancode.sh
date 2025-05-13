@@ -12,10 +12,7 @@ pyEnvPath="/tmp/scancode-env"
 python3 -m venv $pyEnvPath
 source $pyEnvPath/bin/activate
 pip install scancode-toolkit==$SCANCODE_VERSION
-dir /usr/local/bin/
 deactivate
-
-chmod +x /usr/local/bin/scancode
 
 # Setup a script which executes scancode in the virtual environment
 sudo cat > /usr/local/bin/scancode << EOF
