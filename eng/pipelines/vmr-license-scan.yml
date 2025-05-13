@@ -72,19 +72,12 @@ jobs:
     displayName: Install .NET SDK
     workingDirectory: $(Build.SourcesDirectory)
 
-  - task: PipAuthenticate@1
-    displayName: 'Pip Authenticate'
-    inputs:
-      artifactFeeds: public/dotnet-public-pypi
-      onlyAddExtraIndex: false
-
   - script: $(sdkRoot)/eng/install-scancode.sh
     displayName: Install Scancode
 
   - script: |
       python3 --version
       scancode --version
-      sudo apt install python3.12-venv -y
     displayName: check python version
     workingDirectory: $(Build.SourcesDirectory)
 
