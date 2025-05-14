@@ -54,7 +54,7 @@ jobs:
     vmImage: ubuntu-latest
   container: 
     image: mcr.microsoft.com/dotnet-buildtools/prereqs:ubuntu-24.04
-    options: '--user 0'
+    options: '--memory=6g --privileged'
   timeoutInMinutes: 420
   strategy:
     matrix: $[ dependencies.Setup.outputs['GetMatrix.matrix'] ]
