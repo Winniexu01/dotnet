@@ -51,19 +51,18 @@ jobs:
 - job: LicenseScan
   dependsOn: Setup
   pool:
-    vmImage: ubuntu-latest
-  container: 
-    image: mcr.microsoft.com/dotnet-buildtools/prereqs:ubuntu-24.04
-    options: '--memory=6g --privileged'
+    vmImage: ubuntu-24.04
+  # container: 
+  #   image: mcr.microsoft.com/dotnet-buildtools/prereqs:ubuntu-24.04
+  #   options: '--memory=6g --privileged'
   timeoutInMinutes: 420
   strategy:
     matrix: $[ dependencies.Setup.outputs['GetMatrix.matrix'] ]
   steps:
 
   - script: |
-      sudo apt update
-      sudo apt install python3 -y
-      sudo apt install python3.12-venv -y
+      apt-get update
+      apt-get install python3-venv -y
     displayName: install python
     workingDirectory: $(Build.SourcesDirectory)
 
@@ -83,7 +82,7 @@ jobs:
     workingDirectory: $(Build.SourcesDirectory)
 
   - script: >
-      dotnet test
+      $(Build.SourcesDirectory)/.dotnet/dotnet test
       $(Build.SourcesDirectory)/test/Microsoft.DotNet.SourceBuild.SmokeTests/Microsoft.DotNet.SourceBuild.SmokeTests.csproj
       --filter "FullyQualifiedName=Microsoft.DotNet.SourceBuild.SmokeTests.LicenseScanTests.ScanForLicenses"
       --logger:'trx;LogFileName=$(Agent.JobName)_LicenseScan.trx'
