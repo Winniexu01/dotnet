@@ -61,8 +61,8 @@ jobs:
   steps:
 
   - script: |
-      apt-get update
-      apt-get install python3-venv -y
+      sudo apt-get update
+      sudo apt-get install python3-venv -y
     displayName: install python
     workingDirectory: $(Build.SourcesDirectory)
 
