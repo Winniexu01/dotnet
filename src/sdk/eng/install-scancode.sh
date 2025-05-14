@@ -19,7 +19,7 @@ su -c "cat > /usr/local/bin/scancode << EOF
 #!/bin/bash
 set -euo pipefail
 source $pyEnvPath/bin/activate
-scancode "\$@"
+scancode \"\$@\"
 deactivate
 EOF"
 
