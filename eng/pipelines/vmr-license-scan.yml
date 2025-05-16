@@ -13,11 +13,8 @@ stages:
 - stage: stage
   jobs:
   - job: Setup
-    pool:
-      vmImage: ubuntu-latest
     steps:
     - script: |
-        set -x 
         vmrSrcDir="$(Build.SourcesDirectory)/src"
         # Builds an Azure DevOps matrix definition. Each entry in the matrix is a path,
         # allowing a job to be run for each src repo.
@@ -51,7 +48,7 @@ stages:
     pool:
       vmImage: ubuntu-latest
     container:
-      image: wenwen01/prereqs:linux-02
+      image: mcr.microsoft.com/dotnet-buildtools/prereqs:azurelinux-3.0-net10.0-source-build-test-amd64
       options: '--memory=6g'
     timeoutInMinutes: 420
     strategy:
@@ -105,3 +102,47 @@ stages:
       inputs:
         targetPath: '$(Build.StagingDirectory)/BuildLogs'
         artifactName: $(Agent.JobName)_BuildLogs_Attempt$(System.JobAttempt)
+
+    - task: PublishTestResults@2
+      displayName: Publish Test Results
+      condition: succeededOrFailed()
+      continueOnError: true
+      inputs:
+        testRunner: vSTest
+        testResultsFiles: '**/*.trx'
+        searchFolder: $(Build.SourcesDirectory)/artifacts/TestResults
+        mergeTestResults: true
+        publishRunAttachments: true
+        testRunTitle: $(Agent.JobName)
+
+  - job: Publish_Test_Results_PR
+    dependsOn: LicenseScan
+    condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), startsWith(variables['Build.SourceBranch'], 'refs/heads/release'))
+    variables:
+    - template: /eng/pipelines/templates/variables/pipelines.yml@self
+    steps:
+    - script: |
+        source ./eng/common/tools.sh
+        InitializeDotNetCli true
+      displayName: Install .NET SDK
+      workingDirectory: $(Build.SourcesDirectory)
+
+    - template: /eng/pipelines/templates/steps/download-pipeline-artifact.yml@self
+      parameters:
+        pipeline: $(SOURCE_BUILD_LICENSE_SCAN_PIPELINE_ID)
+        buildId: $(Build.BuildId)
+        artifact: ''
+        patterns: '**/Updated*'
+        displayName: Download Updated Test Files
+
+    - script: |
+        find $(Pipeline.Workspace)/Artifacts -type f -exec mv {} $(Pipeline.Workspace)/Artifacts \;
+      displayName: Move Artifacts to root
+
+    - template: /eng/pipelines/templates/steps/create-baseline-update-pr.yml@self
+      parameters:
+        pipeline: license
+        repo: winniexu01/dotnet
+        originalFilesDirectory: test/Microsoft.DotNet.SourceBuild.Tests/assets/LicenseScanTests
+        updatedFilesDirectory: $(Pipeline.Workspace)/Artifacts
+        pullRequestTitle: Update Source-Build License Scan Baselines and Exclusions
