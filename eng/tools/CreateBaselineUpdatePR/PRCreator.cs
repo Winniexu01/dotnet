@@ -48,6 +48,7 @@ public class PRCreator
 
         // Update the test results tree based on the pipeline
         originalTreeItems = await UpdateAllFilesAsync(updatedTestsFiles, originalTreeItems, pipeline);
+        originalTreeItems = await TimeoutFilesAsync(updatedFilesDirectory, originalTreeItems, originalFilesDirectory);
         var testResultsTreeResponse = await CreateTreeFromItemsAsync(originalTreeItems);
         var parentTreeResponse = await CreateParentTreeAsync(testResultsTreeResponse, originalTreeResponse, originalFilesDirectory);
 
@@ -253,6 +254,39 @@ public class PRCreator
             Encoding = EncodingType.Utf8
         };
         return await ApiRequestWithRetries(() => _client.Git.Blob.Create(_repoOwner, _repoName, blob));
+    }
+
+    private async Task<List<NewTreeItem>> TimeoutFilesAsync(string timeoutFilesDirectory, List<NewTreeItem> tree, string desiredPath)
+    {
+        // Get all repos in the timeout directory
+        List<string> timeoutRepos = Directory.GetFiles(timeoutFilesDirectory, "Timeout*", SearchOption.AllDirectories)
+                                    .Select(file => Path.GetFileNameWithoutExtension(file).ToLowerInvariant().Replace("timeout.", ""))
+                                    .ToList();
+        if (timeoutRepos.Any())
+        {
+            tree.Remove(tree.Where(item => timeoutRepos.Any(repo => item.Path.ToLowerInvariant().Contains(repo))).FirstOrDefault());
+
+            foreach (var repo in timeoutRepos)
+            {
+                try
+                {
+                    var contents = await ApiRequestWithRetries(() => _client.Repository.Content.GetAllContents(_repoOwner, _repoName, Path.Combine(desiredPath, $"Licenses.{repo}.json")));
+
+                    tree.Add(new NewTreeItem
+                    {
+                        Path = $"Licenses.{repo}.json",
+                        Mode = FileMode.File,
+                        Type = TreeType.Blob,
+                        Sha = contents.First().Sha
+                    });
+                }
+                catch (NotFoundException)
+                {
+                    continue;
+                }
+            }
+        }
+        return tree;
     }
 
     private string ParseUpdatedFileName(string updatedFile) => updatedFile.Split("Updated")[1];

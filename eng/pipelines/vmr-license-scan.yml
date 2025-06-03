@@ -146,7 +146,8 @@ extends:
             find artifacts/TestResults/ -type f -name "Updated*.json"
             find artifacts/TestResults/ -type f -name "Updated*.json" -exec cp {} --parents -t ${targetFolder} \;
             echo "Results:"
-            find artifacts/TestResults/ -type f -name "scancode-results*.json" -exec cp {} --parents -t ${targetFolder} \;
+            find artifacts/TestResults/ -type f -name "scancode*.json" -exec cp {} --parents -t ${targetFolder} \;
+            find artifacts/TestResults/ -type f -name "Timeout.*.txt" -exec cp {} --parents -t ${targetFolder} \;
             echo "All:"
             ls -R artifacts/TestResults/
             echo "BuildLogs:"
@@ -184,7 +185,9 @@ extends:
             pipeline: $(SOURCE_BUILD_LICENSE_SCAN_PIPELINE_ID)
             buildId: $(Build.BuildId)
             artifact: ''
-            patterns: '**/Updated*'
+            patterns:  |
+              **/Updated*
+              **/Timeout*
             displayName: Download Updated Test Files
 
         - script: |
