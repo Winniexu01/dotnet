@@ -9,6 +9,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 #nullable enable
+#pragma warning disable ASP0029
 
 namespace System.Runtime.CompilerServices
 {
@@ -38,6 +39,7 @@ namespace Microsoft.AspNetCore.Http.Validation.Generated
             Name = name;
         }
 
+        [global::System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(global::System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicProperties)]
         internal global::System.Type ContainingType { get; }
         internal string Name { get; }
 
@@ -62,7 +64,65 @@ namespace Microsoft.AspNetCore.Http.Validation.Generated
             validatableInfo = null;
             if (type == typeof(global::ComplexTypeWithParsableProperties))
             {
-                validatableInfo = CreateComplexTypeWithParsableProperties();
+                validatableInfo = new GeneratedValidatableTypeInfo(
+                    type: typeof(global::ComplexTypeWithParsableProperties),
+                    members: [
+                        new GeneratedValidatablePropertyInfo(
+                            containingType: typeof(global::ComplexTypeWithParsableProperties),
+                            propertyType: typeof(global::System.Guid?),
+                            name: "GuidWithRegularExpression",
+                            displayName: "GuidWithRegularExpression"
+                        ),
+                        new GeneratedValidatablePropertyInfo(
+                            containingType: typeof(global::ComplexTypeWithParsableProperties),
+                            propertyType: typeof(global::System.TimeOnly?),
+                            name: "TimeOnlyWithRequiredValue",
+                            displayName: "TimeOnlyWithRequiredValue"
+                        ),
+                        new GeneratedValidatablePropertyInfo(
+                            containingType: typeof(global::ComplexTypeWithParsableProperties),
+                            propertyType: typeof(string),
+                            name: "Url",
+                            displayName: "Url"
+                        ),
+                        new GeneratedValidatablePropertyInfo(
+                            containingType: typeof(global::ComplexTypeWithParsableProperties),
+                            propertyType: typeof(global::System.DateOnly?),
+                            name: "DateOnlyWithRange",
+                            displayName: "DateOnlyWithRange"
+                        ),
+                        new GeneratedValidatablePropertyInfo(
+                            containingType: typeof(global::ComplexTypeWithParsableProperties),
+                            propertyType: typeof(global::System.DateTime?),
+                            name: "DateTimeWithRange",
+                            displayName: "DateTimeWithRange"
+                        ),
+                        new GeneratedValidatablePropertyInfo(
+                            containingType: typeof(global::ComplexTypeWithParsableProperties),
+                            propertyType: typeof(decimal?),
+                            name: "DecimalWithRange",
+                            displayName: "DecimalWithRange"
+                        ),
+                        new GeneratedValidatablePropertyInfo(
+                            containingType: typeof(global::ComplexTypeWithParsableProperties),
+                            propertyType: typeof(global::System.TimeSpan?),
+                            name: "TimeSpanWithHourRange",
+                            displayName: "TimeSpanWithHourRange"
+                        ),
+                        new GeneratedValidatablePropertyInfo(
+                            containingType: typeof(global::ComplexTypeWithParsableProperties),
+                            propertyType: typeof(bool),
+                            name: "BooleanWithRange",
+                            displayName: "BooleanWithRange"
+                        ),
+                        new GeneratedValidatablePropertyInfo(
+                            containingType: typeof(global::ComplexTypeWithParsableProperties),
+                            propertyType: typeof(global::System.Version),
+                            name: "VersionWithRegex",
+                            displayName: "VersionWithRegex"
+                        ),
+                    ]
+                );
                 return true;
             }
 
@@ -75,70 +135,6 @@ namespace Microsoft.AspNetCore.Http.Validation.Generated
             validatableInfo = null;
             return false;
         }
-
-        private ValidatableTypeInfo CreateComplexTypeWithParsableProperties()
-        {
-            return new GeneratedValidatableTypeInfo(
-                type: typeof(global::ComplexTypeWithParsableProperties),
-                members: [
-                    new GeneratedValidatablePropertyInfo(
-                        containingType: typeof(global::ComplexTypeWithParsableProperties),
-                        propertyType: typeof(global::System.Guid?),
-                        name: "GuidWithRegularExpression",
-                        displayName: "GuidWithRegularExpression"
-                    ),
-                    new GeneratedValidatablePropertyInfo(
-                        containingType: typeof(global::ComplexTypeWithParsableProperties),
-                        propertyType: typeof(global::System.TimeOnly?),
-                        name: "TimeOnlyWithRequiredValue",
-                        displayName: "TimeOnlyWithRequiredValue"
-                    ),
-                    new GeneratedValidatablePropertyInfo(
-                        containingType: typeof(global::ComplexTypeWithParsableProperties),
-                        propertyType: typeof(string),
-                        name: "Url",
-                        displayName: "Url"
-                    ),
-                    new GeneratedValidatablePropertyInfo(
-                        containingType: typeof(global::ComplexTypeWithParsableProperties),
-                        propertyType: typeof(global::System.DateOnly?),
-                        name: "DateOnlyWithRange",
-                        displayName: "DateOnlyWithRange"
-                    ),
-                    new GeneratedValidatablePropertyInfo(
-                        containingType: typeof(global::ComplexTypeWithParsableProperties),
-                        propertyType: typeof(global::System.DateTime?),
-                        name: "DateTimeWithRange",
-                        displayName: "DateTimeWithRange"
-                    ),
-                    new GeneratedValidatablePropertyInfo(
-                        containingType: typeof(global::ComplexTypeWithParsableProperties),
-                        propertyType: typeof(decimal?),
-                        name: "DecimalWithRange",
-                        displayName: "DecimalWithRange"
-                    ),
-                    new GeneratedValidatablePropertyInfo(
-                        containingType: typeof(global::ComplexTypeWithParsableProperties),
-                        propertyType: typeof(global::System.TimeSpan?),
-                        name: "TimeSpanWithHourRange",
-                        displayName: "TimeSpanWithHourRange"
-                    ),
-                    new GeneratedValidatablePropertyInfo(
-                        containingType: typeof(global::ComplexTypeWithParsableProperties),
-                        propertyType: typeof(bool),
-                        name: "BooleanWithRange",
-                        displayName: "BooleanWithRange"
-                    ),
-                    new GeneratedValidatablePropertyInfo(
-                        containingType: typeof(global::ComplexTypeWithParsableProperties),
-                        propertyType: typeof(global::System.Version),
-                        name: "VersionWithRegex",
-                        displayName: "VersionWithRegex"
-                    ),
-                ]
-            );
-        }
-
     }
 
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.AspNetCore.Http.ValidationsGenerator, Version=42.42.42.42, Culture=neutral, PublicKeyToken=adb9793829ddae60", "42.42.42.42")]
@@ -162,10 +158,11 @@ namespace Microsoft.AspNetCore.Http.Validation.Generated
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.AspNetCore.Http.ValidationsGenerator, Version=42.42.42.42, Culture=neutral, PublicKeyToken=adb9793829ddae60", "42.42.42.42")]
     file static class ValidationAttributeCache
     {
-        private sealed record CacheKey(global::System.Type ContainingType, string PropertyName);
+        private sealed record CacheKey([property: global::System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(global::System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicProperties)] global::System.Type ContainingType, string PropertyName);
         private static readonly global::System.Collections.Concurrent.ConcurrentDictionary<CacheKey, global::System.ComponentModel.DataAnnotations.ValidationAttribute[]> _cache = new();
 
         public static global::System.ComponentModel.DataAnnotations.ValidationAttribute[] GetValidationAttributes(
+            [global::System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(global::System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicProperties)]
             global::System.Type containingType,
             string propertyName)
         {

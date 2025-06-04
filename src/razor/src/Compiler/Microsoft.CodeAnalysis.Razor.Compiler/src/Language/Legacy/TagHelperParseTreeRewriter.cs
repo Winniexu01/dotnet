@@ -36,10 +36,7 @@ internal static class TagHelperParseTreeRewriter
 
         foreach (var descriptor in binder.Descriptors)
         {
-            foreach (var diagnostic in descriptor.GetAllDiagnostics())
-            {
-                builder.Add(diagnostic);
-            }
+            descriptor.AppendAllDiagnostics(ref builder.AsRef());
         }
 
         var diagnostics = builder.ToImmutableOrderedBy(static d => d.Span.AbsoluteIndex);
@@ -118,7 +115,8 @@ internal static class TagHelperParseTreeRewriter
                         }
 
                         // This tag contains a body and/or an end tag which needs to be moved to the parent.
-                        using var _ = SyntaxListBuilderPool.GetPooledBuilder<RazorSyntaxNode>(out var rewrittenNodes);
+                        using PooledArrayBuilder<RazorSyntaxNode> rewrittenNodes = [];
+
                         rewrittenNodes.Add(rewrittenTagHelper);
                         var rewrittenBody = VisitList(node.Body);
                         rewrittenNodes.AddRange(rewrittenBody);
@@ -161,7 +159,7 @@ internal static class TagHelperParseTreeRewriter
             var body = VisitList(node.Body);
 
             // Visit end tag.
-            var endTag = (MarkupEndTagSyntax)Visit(node.EndTag);
+            var endTag = (MarkupEndTagSyntax?)Visit(node.EndTag);
             if (endTag != null)
             {
                 var tagName = endTag.GetTagNameWithOptionalBang();

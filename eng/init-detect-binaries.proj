@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.Build.NoTargets">
+
+  <PropertyGroup>
+    <TargetFramework>$(NetCurrent)</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="$(ToolsDir)BinaryToolKit\BinaryToolKit.csproj" />
+  </ItemGroup>
+
+  <UsingTask TaskName="BinaryToolTask" AssemblyFile="$(BinaryToolKitAssembly)" TaskFactory="TaskHostFactory" />
+
+  <PropertyGroup>
+    <BinariesMode Condition="'$(BinariesMode)' == ''">Validate</BinariesMode>
+    <AllowedBinariesFile Condition="'$(AllowedBinariesFile)' == ''">$(RepositoryEngineeringDir)allowed-vmr-binaries.txt</AllowedBinariesFile>
+  </PropertyGroup>
+
+  <Target Name="DetectBinaries"
+          DependsOnTargets="ResolveProjectReferences"
+          BeforeTargets="Build">
+
+    <BinaryToolTask
+      Mode="$(BinariesMode)"
+      TargetDirectory="$(RepoRoot)"
+      AllowedBinariesFile="$(AllowedBinariesFile)"
+      OutputReportDirectory="$(BinariesReportDir)" />
+  </Target>
+
+</Project>

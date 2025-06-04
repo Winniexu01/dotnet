@@ -35,6 +35,7 @@
     <PreviouslyRestoredPackagesPath>$([MSBuild]::NormalizeDirectory('$(PrereqsPackagesDir)', 'previouslyRestored'))</PreviouslyRestoredPackagesPath>
     <PreviouslySourceBuiltPackagesPath>$([MSBuild]::NormalizeDirectory('$(PrereqsPackagesDir)', 'previously-source-built'))</PreviouslySourceBuiltPackagesPath>
     <PreviouslySourceBuiltPackagesPath Condition="'$(CustomPreviouslySourceBuiltPackagesPath)' != ''">$([MSBuild]::EnsureTrailingSlash('$(CustomPreviouslySourceBuiltPackagesPath)'))</PreviouslySourceBuiltPackagesPath>
+    <PreviouslySourceBuiltPackageVersionsPropsFile>$(PreviouslySourceBuiltPackagesPath)PackageVersions.props</PreviouslySourceBuiltPackageVersionsPropsFile>
 
     <SbrpRepoSrcDir>$([MSBuild]::NormalizeDirectory('$(SrcDir)', 'source-build-reference-packages', 'src'))</SbrpRepoSrcDir>
     <ReferencePackagesDir>$([MSBuild]::NormalizeDirectory('$(PrereqsPackagesDir)', 'reference'))</ReferencePackagesDir>
@@ -45,12 +46,17 @@
 
     <BaselineDataFile>$(ToolsDir)prebuilt-baseline.xml</BaselineDataFile>
     <PackageVersionsDir>$([MSBuild]::NormalizeDirectory('$(ArtifactsObjDir)', 'PackageVersions'))</PackageVersionsDir>
+
+    <!-- Binary detection -->
+    <BinariesReportDir>$(ArtifactsLogDir)binary-report</BinariesReportDir>
+    <BinariesReportFile>$(BinariesReportDir)/NewBinaries.txt</BinariesReportFile>
   </PropertyGroup>
 
   <!-- Build task assembly paths -->
   <PropertyGroup>
     <MicrosoftDotNetUnifiedBuildTasksAssembly>$([MSBuild]::NormalizePath('$(ArtifactsBinDir)', 'Microsoft.DotNet.UnifiedBuild.Tasks', '$(Configuration)', 'Microsoft.DotNet.UnifiedBuild.Tasks.dll'))</MicrosoftDotNetUnifiedBuildTasksAssembly>
     <MicrosoftDotNetSourceBuildTasksLeakDetectionAssembly>$([MSBuild]::NormalizePath('$(ArtifactsBinDir)', 'Microsoft.DotNet.SourceBuild.Tasks.LeakDetection', '$(Configuration)', 'Microsoft.DotNet.SourceBuild.Tasks.LeakDetection.dll'))</MicrosoftDotNetSourceBuildTasksLeakDetectionAssembly>
+    <BinaryToolKitAssembly>$([MSBuild]::NormalizePath('$(ArtifactsBinDir)', 'BinaryToolKit', '$(Configuration)', 'BinaryToolKit.dll'))</BinaryToolKitAssembly>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(EnablePoison)' == 'true'">

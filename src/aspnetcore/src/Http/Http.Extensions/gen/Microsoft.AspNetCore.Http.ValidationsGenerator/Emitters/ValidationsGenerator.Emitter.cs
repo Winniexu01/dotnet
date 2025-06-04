@@ -37,6 +37,7 @@ public sealed partial class ValidationsGenerator : IIncrementalGenerator
 // </auto-generated>
 //------------------------------------------------------------------------------
 #nullable enable
+#pragma warning disable ASP0029
 
 namespace System.Runtime.CompilerServices
 {
@@ -66,6 +67,7 @@ namespace Microsoft.AspNetCore.Http.Validation.Generated
             Name = name;
         }
 
+        [global::System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(global::System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicProperties)]
         internal global::System.Type ContainingType { get; }
         internal string Name { get; }
 
@@ -98,8 +100,6 @@ namespace Microsoft.AspNetCore.Http.Validation.Generated
             validatableInfo = null;
             return false;
         }
-
-{{EmitCreateMethods(validatableTypes)}}
     }
 
     {{GeneratedCodeAttribute}}
@@ -123,10 +123,11 @@ namespace Microsoft.AspNetCore.Http.Validation.Generated
     {{GeneratedCodeAttribute}}
     file static class ValidationAttributeCache
     {
-        private sealed record CacheKey(global::System.Type ContainingType, string PropertyName);
+        private sealed record CacheKey([property: global::System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(global::System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicProperties)] global::System.Type ContainingType, string PropertyName);
         private static readonly global::System.Collections.Concurrent.ConcurrentDictionary<CacheKey, global::System.ComponentModel.DataAnnotations.ValidationAttribute[]> _cache = new();
 
         public static global::System.ComponentModel.DataAnnotations.ValidationAttribute[] GetValidationAttributes(
+            [global::System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(global::System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicProperties)]
             global::System.Type containingType,
             string propertyName)
         {
@@ -181,24 +182,9 @@ namespace Microsoft.AspNetCore.Http.Validation.Generated
             var typeName = validatableType.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
             cw.WriteLine($"if (type == typeof({typeName}))");
             cw.StartBlock();
-            cw.WriteLine($"validatableInfo = Create{SanitizeTypeName(validatableType.Type.MetadataName)}();");
-            cw.WriteLine("return true;");
-            cw.EndBlock();
-        }
-        return sw.ToString();
-    }
-
-    private static string EmitCreateMethods(ImmutableArray<ValidatableType> validatableTypes)
-    {
-        var sw = new StringWriter();
-        var cw = new CodeWriter(sw, baseIndent: 2);
-        foreach (var validatableType in validatableTypes)
-        {
-            cw.WriteLine($@"private ValidatableTypeInfo Create{SanitizeTypeName(validatableType.Type.MetadataName)}()");
-            cw.StartBlock();
-            cw.WriteLine("return new GeneratedValidatableTypeInfo(");
+            cw.WriteLine($"validatableInfo = new GeneratedValidatableTypeInfo(");
             cw.Indent++;
-            cw.WriteLine($"type: typeof({validatableType.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}),");
+            cw.WriteLine($"type: typeof({typeName}),");
             if (validatableType.Members.IsDefaultOrEmpty)
             {
                 cw.WriteLine("members: []");
@@ -216,6 +202,7 @@ namespace Microsoft.AspNetCore.Http.Validation.Generated
             }
             cw.Indent--;
             cw.WriteLine(");");
+            cw.WriteLine("return true;");
             cw.EndBlock();
         }
         return sw.ToString();
@@ -231,16 +218,5 @@ namespace Microsoft.AspNetCore.Http.Validation.Generated
         cw.WriteLine($"displayName: \"{member.DisplayName}\"");
         cw.Indent--;
         cw.WriteLine("),");
-    }
-
-    private static string SanitizeTypeName(string typeName)
-    {
-        // Replace invalid characters with underscores and remove generic notation
-        return typeName
-            .Replace(".", "_")
-            .Replace("<", "_")
-            .Replace(">", "_")
-            .Replace(",", "_")
-            .Replace(" ", "_");
     }
 }

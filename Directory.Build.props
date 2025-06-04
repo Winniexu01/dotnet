@@ -2,8 +2,7 @@
 
   <PropertyGroup>
     <Configuration Condition="$(Configuration) == ''">Release</Configuration>
-    <DotNetBuildOrchestrator>true</DotNetBuildOrchestrator>
-    <RootRepo>dotnet</RootRepo>
+    <DotNetBuildFromVMR>true</DotNetBuildFromVMR>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
@@ -45,6 +44,9 @@
 
   <!-- Manually import the Versions.props file when the Arcade SDK isn't used. -->
   <Import Project="$(RepositoryEngineeringDir)Versions.props" Condition="'$(SkipArcadeSdkImport)' == 'true'" />
+  <Import Project="$(RepositoryEngineeringDir)VmrLayout.props" />
+  <!-- For source only builds non test builds, override Versions.props entries with previously sourcebuilt artifacts. -->
+  <Import Project="$(PreviouslySourceBuiltPackageVersionsPropsFile)" Condition="'$(DotNetBuildSourceOnly)' == 'true' and '$(IsTestRun)' != 'true' and Exists('$(PreviouslySourceBuiltPackageVersionsPropsFile)')" />
 
   <PropertyGroup>
     <!-- TODO: Remove when Arcade updated NetCurrent to net10.0. -->
@@ -60,6 +62,8 @@
     <!-- Don't use Arcade's ExcludeFrom* build infra in the VMR orchestrator. -->
     <DisableArcadeExcludeFromBuildSupport>true</DisableArcadeExcludeFromBuildSupport>
     <LangVersion>latest</LangVersion>
+    <!-- Don't run NuGetAudit on offline builds. -->
+    <NuGetAudit Condition="'$(DotNetBuildWithOnlineFeeds)' != 'true'">false</NuGetAudit>
     <!-- Explicitly set NuGetAuditModel level as it's currently disabled in the product. -->
     <NuGetAuditMode>all</NuGetAuditMode>
     <!-- Only upgrade NuGetAudit warnings to errors for official builds. -->
@@ -73,5 +77,4 @@
     <ShellExtension Condition="'$(BuildOS)' != 'windows'">.sh</ShellExtension>
   </PropertyGroup>
 
-  <Import Project="$(RepositoryEngineeringDir)VmrLayout.props" />
 </Project>

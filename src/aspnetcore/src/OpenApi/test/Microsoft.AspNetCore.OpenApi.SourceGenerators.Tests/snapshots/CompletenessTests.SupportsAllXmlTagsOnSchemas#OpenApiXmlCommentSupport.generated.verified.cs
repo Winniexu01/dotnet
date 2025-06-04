@@ -43,7 +43,6 @@ namespace Microsoft.AspNetCore.OpenApi.Generated
     using Microsoft.OpenApi.Models;
     using Microsoft.OpenApi.Models.Interfaces;
     using Microsoft.OpenApi.Models.References;
-    using Microsoft.OpenApi.Any;
 
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.AspNetCore.OpenApi.SourceGenerators, Version=42.42.42.42, Culture=neutral, PublicKeyToken=adb9793829ddae60", "42.42.42.42")]
     file record XmlComment(
@@ -149,7 +148,8 @@ generic type, or the type parameter.", null, null, false, null, null, null));
 generic types to open generics for use in
 typeof expressions.", null, null, null, null, false, null, null, null));
             cache.Add(@"T:ParamsAndParamRefs", new XmlComment(@"This shows examples of typeparamref and typeparam tags", null, null, null, null, false, null, null, null));
-            cache.Add(@"P:ExampleClass.Label", new XmlComment(null, null, @"    The string? ExampleClass.Label is a <see langword=""string"" />
+            cache.Add(@"T:DisposableType", new XmlComment(@"A class that implements the IDisposable interface.", null, null, null, null, false, null, null, null));
+            cache.Add(@"P:ExampleClass.Label", new XmlComment(null, null, @"    The string? ExampleClass.Label is a `string`
     that you use for a label.
     Note that there isn't a way to provide a ""cref"" to
 each accessor, only to the property itself.", null, @"The `Label` property represents a label
@@ -192,6 +192,7 @@ type parameter inside.", null, null, null, null, false, null, null, null));
 method as a cref attribute.
 The parameter and return value are both of an arbitrary type,
 T", null, null, false, null, null, null));
+            cache.Add(@"M:DisposableType.Dispose", new XmlComment(null, null, null, null, null, false, null, null, null));
 
             return cache;
         }
@@ -473,6 +474,13 @@ T", null, null, false, null, null, null));
                         }
                     }
                 }
+                // Applies `<returns>` on XML comments for operation with single response value.
+                if (methodComment.Returns is { } returns && operation.Responses is { Count: 1 })
+                {
+                    var response = operation.Responses.First();
+                    response.Value.Description = returns;
+                }
+                // Applies `<response>` on XML comments for operation with multiple response values.
                 if (methodComment.Responses is { Count: > 0} && operation.Responses is { Count: > 0 })
                 {
                     foreach (var response in operation.Responses)
