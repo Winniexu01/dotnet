@@ -16,6 +16,8 @@
 
   <PropertyGroup>
     <TargetFramework>$(NetCurrent)</TargetFramework>
+    <NoTargetsDoNotReferenceOutputAssemblies>false</NoTargetsDoNotReferenceOutputAssemblies>
+
     <ProjectDirectory>$([MSBuild]::NormalizeDirectory('$(SrcDir)', '$(RepositoryName)'))</ProjectDirectory>
 
     <!-- Paths to the version props files -->
@@ -37,6 +39,9 @@
 
     <RepoArtifactsDir>$([MSBuild]::NormalizeDirectory('$(ProjectDirectory)', 'artifacts'))</RepoArtifactsDir>
     <RepoArtifactsPackageCache>$([MSBuild]::NormalizeDirectory('$(RepoArtifactsDir)', '.packages'))</RepoArtifactsPackageCache>
+    <RepoArtifactsShippingPackagesDir>$([MSBuild]::NormalizeDirectory('$(ArtifactsShippingPackagesDir)', '$(RepositoryName)'))</RepoArtifactsShippingPackagesDir>
+    <RepoArtifactsNonShippingPackagesDir>$([MSBuild]::NormalizeDirectory('$(ArtifactsNonShippingPackagesDir)', '$(RepositoryName)'))</RepoArtifactsNonShippingPackagesDir>
+    <RepoArtifactsPdbArtifactsDir>$([MSBuild]::NormalizeDirectory('$(ArtifactsSymStoreDirectory)', '$(RepositoryName)'))</RepoArtifactsPdbArtifactsDir>
 
     <SourceBuiltSdksDir>$([MSBuild]::NormalizeDirectory('$(ArtifactsDir)', 'source-built-sdks'))</SourceBuiltSdksDir>
 
@@ -217,9 +222,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="$(TasksDir)Microsoft.DotNet.UnifiedBuild.Tasks\Microsoft.DotNet.UnifiedBuild.Tasks.csproj" />
+    <ProjectReference Include="$(TasksDir)Microsoft.DotNet.UnifiedBuild.Tasks\Microsoft.DotNet.UnifiedBuild.Tasks.csproj" ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
     <!-- Skip the sdk resolver in source-only mode as it already got built in the previous msbuild node execution triggered in build.sh. -->
-    <ProjectReference Include="$(TasksDir)Microsoft.DotNet.UnifiedBuild.MSBuildSdkResolver\Microsoft.DotNet.UnifiedBuild.MSBuildSdkResolver.csproj" Condition="'$(DotNetBuildSourceOnly)' != 'true'" />
+    <ProjectReference Include="$(TasksDir)Microsoft.DotNet.UnifiedBuild.MSBuildSdkResolver\Microsoft.DotNet.UnifiedBuild.MSBuildSdkResolver.csproj" ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" Condition="'$(DotNetBuildSourceOnly)' != 'true'" />
   </ItemGroup>
 
 </Project>
