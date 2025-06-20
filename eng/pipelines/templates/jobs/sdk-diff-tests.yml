@@ -39,7 +39,12 @@ jobs:
       dotnet_dotnet_sha=''
 
       if [[ -z "$dotnet_dotnet_build" ]]; then
-        dotnet_dotnet_build=$(az pipelines runs list --branch '$(Build.SourceBranch)' --organization '$(AZDO_ORG)' --project '$(AZDO_PROJECT)' --pipeline-ids '$(DOTNET_DOTNET_CI_PIPELINE_ID)' --status completed --top 1 --query "[].id" --output tsv)
+        if [[ -z "$(Resources.TriggeringAlias)" ]]; then
+          dotnet_dotnet_build=$(az pipelines runs list --branch '$(Build.SourceBranch)' --organization '$(AZDO_ORG)' --project '$(AZDO_PROJECT)' --pipeline-ids '$(DOTNET_DOTNET_CI_PIPELINE_ID)' --status completed --top 1 --query "[].id" --output tsv)
+        else
+          runID=$(Resources.TriggeringAlias)_runID
+          dotnet_dotnet_build=${!runID}
+        fi
       fi
 
       if [[ -z "$dotnet_dotnet_build" ]]; then
@@ -48,7 +53,12 @@ jobs:
       fi
 
       if [[ -z "$dotnet_dotnet_sha" ]]; then
-        dotnet_dotnet_sha=$(az pipelines build show --organization '$(AZDO_ORG)' --project '$(AZDO_PROJECT)' --id "$dotnet_dotnet_build" --query "sourceVersion" --output tsv)
+        if [[ -z "$(Resources.TriggeringAlias)" ]]; then
+          dotnet_dotnet_sha=$(az pipelines build show --organization '$(AZDO_ORG)' --project '$(AZDO_PROJECT)' --id "$dotnet_dotnet_build" --query "sourceVersion" --output tsv)
+        else
+          sourceCommit=$(Resources.TriggeringAlias)_sourceCommit
+          dotnet_dotnet_sha=${!sourceCommit}
+        fi
       fi
 
       if [[ -z "$dotnet_dotnet_sha" ]]; then
@@ -64,6 +74,10 @@ jobs:
     name: Get_Build_Id
     env:
       AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
+      dotnet-unified-build_runID: $(resources.pipeline.dotnet-unified-build.runID)
+      dotnet-unified-build_sourceCommit: $(resources.pipeline.dotnet-unified-build.sourceCommit)
+      dotnet-source-build-pre10.0_runID: $(resources.pipeline.dotnet-source-build-pre10.0.runID)
+      dotnet-source-build-pre10.0_sourceCommit: $(resources.pipeline.dotnet-source-build-pre10.0.sourceCommit)
 
   - template: ../steps/download-vmr-artifact.yml
     parameters:
